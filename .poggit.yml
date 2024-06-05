@@ -1,0 +1,9 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/XPocketMC/PocketEconomy
+build-by-default: true
+branches:
+- master
+- develop
+projects:
+   PocketEconomy:
+   VoiceChat:
+...
