@@ -1,0 +1,42 @@
+name: PocketEconomy
+main: PocketEconomy\Main
+version: 1.0.0
+api: 5.0.0
+author: XPocketMC
+commands:
+  mymoney:
+    description: Shows your money
+    usage: "/mymoney"
+    permission: pocketeconomy.command.mymoney
+  setmoney:
+    description: Sets a player's money
+    usage: "/setmoney <player> <money>"
+    permission: pocketeconomy.command.setmoney
+  givemoney:
+    description: Gives money to a player
+    usage: "/givemoney <player> <money>"
+    permission: pocketeconomy.command.givemoney
+  takemoney:
+    description: Takes money from a player
+    usage: "/takemoney <player> <money>"
+    permission: pocketeconomy.command.takemoney
+  seemoney:
+    description: Shows a player's money
+    usage: "/seemoney <player>"
+    permission: pocketeconomy.command.seemoney
+permissions:
+  pocketeconomy.command.mymoney:
+    description: Allows the player to check their balance
+    default: true
+  pocketeconomy.command.setmoney:
+    description: Allows the player to set another player's balance
+    default: op
+  pocketeconomy.command.givemoney:
+    description: Allows the player to give money to another player
+    default: op
+  pocketeconomy.command.takemoney:
+    description: Allows the player to take money from another player
+    default: op
+  pocketeconomy.command.seemoney:
+    description: Allows the player to see another player's balance
+    default: true
