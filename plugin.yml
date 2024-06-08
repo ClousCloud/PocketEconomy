@@ -1,5 +1,5 @@
-name: PocketEconomy
-main: PocketEconomy\Main
+name: VoiceChat
+main: VoiceChat\Main
 version: 1.0.0
 api: 5.0.0
 author: XPocketMC
