@@ -1,43 +1,107 @@
 name: PocketEconomy
 main: XPocketMC\PocketEconomy\Main
-version: 1.0.0
-api: 5.0.0
 src-namespace-prefix: XPocketMC\PocketEconomy
+version: 1.0.0
+api: [5.0.0]
 author: XPocketMC
+description: A simple economy plugin for PocketMine-MP
+
 commands:
   mymoney:
     description: Shows your money
-    usage: "/mymoney"
+    usage: /mymoney
     permission: pocketeconomy.command.mymoney
+  mydebt:
+    description: Shows your debt
+    usage: /mydebt
+    permission: pocketeconomy.command.mydebt
+  takedebt:
+    description: Borrows money from the plugin
+    usage: /takedebt <amount>
+    permission: pocketeconomy.command.takedebt
+  returndebt:
+    description: Returns money to the plugin
+    usage: /returndebt <amount>
+    permission: pocketeconomy.command.returndebt
+  topmoney:
+    description: Shows server's top money
+    usage: /topmoney
+    permission: pocketeconomy.command.topmoney
+  moneysave:
+    description: Saves data to your hardware
+    usage: /moneysave
+    permission: pocketeconomy.command.moneysave
+    permission-message: You do not have permission to use this command
+  moneyload:
+    description: Loads data from your hardware
+    usage: /moneyload
+    permission: pocketeconomy.command.moneyload
+    permission-message: You do not have permission to use this command
   setmoney:
     description: Sets a player's money
-    usage: "/setmoney <player> <money>"
+    usage: /setmoney <player> <amount>
     permission: pocketeconomy.command.setmoney
+    permission-message: You do not have permission to use this command
   givemoney:
     description: Gives money to a player
-    usage: "/givemoney <player> <money>"
+    usage: /givemoney <player> <amount>
     permission: pocketeconomy.command.givemoney
+    permission-message: You do not have permission to use this command
   takemoney:
     description: Takes money from a player
-    usage: "/takemoney <player> <money>"
+    usage: /takemoney <player> <amount>
     permission: pocketeconomy.command.takemoney
+    permission-message: You do not have permission to use this command
   seemoney:
     description: Shows a player's money
-    usage: "/seemoney <player>"
+    usage: /seemoney <player>
     permission: pocketeconomy.command.seemoney
+  bank:
+    description: Bank operations
+    usage: /bank deposit <amount> | /bank withdraw <amount> | /bank mymoney
+    permission: pocketeconomy.command.bank
+  mystatus:
+    description: Shows your money status
+    usage: /mystatus
+    permission: pocketeconomy.command.mystatus
+  bankadmin:
+    description: Admin bank operations
+    usage: /bankadmin takemoney <player> <amount> | /bankadmin givemoney <player> <amount>
+    permission: pocketeconomy.command.bankadmin
+    permission-message: You do not have permission to use this command
+  economys:
+    description: Shows plugins that are using EconomyAPI
+    usage: /economys
+    permission: pocketeconomy.command.economys
+
 permissions:
   pocketeconomy.command.mymoney:
-    description: Allows the player to check their balance
     default: true
+  pocketeconomy.command.mydebt:
+    default: true
+  pocketeconomy.command.takedebt:
+    default: true
+  pocketeconomy.command.returndebt:
+    default: true
+  pocketeconomy.command.topmoney:
+    default: true
+  pocketeconomy.command.moneysave:
+    default: op
+  pocketeconomy.command.moneyload:
+    default: op
   pocketeconomy.command.setmoney:
-    description: Allows the player to set another player's balance
     default: op
   pocketeconomy.command.givemoney:
-    description: Allows the player to give money to another player
     default: op
   pocketeconomy.command.takemoney:
-    description: Allows the player to take money from another player
     default: op
   pocketeconomy.command.seemoney:
-    description: Allows the player to see another player's balance
+    default: true
+  pocketeconomy.command.bank:
+    default: true
+  pocketeconomy.command.mystatus:
+    default: true
+  pocketeconomy.command.bankadmin:
+    default: op
+  pocketeconomy.command.economys:
     default: true
