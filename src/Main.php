@@ -1,6 +1,8 @@
+  }
+}
 <?php
 
-namespace XPocketMC\PocketEconomy;
+namespace PocketEconomy;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
@@ -166,7 +168,7 @@ class Main extends PluginBase implements Listener {
                 break;
 
             case "setmoney":
-                if (!$sender->isOp()) {
+                if (!$sender->hasPermission("pocketeconomy.command.setmoney")) {
                     $sender->sendMessage("You do not have permission to use this command.");
                     return true;
                 }
@@ -185,7 +187,7 @@ class Main extends PluginBase implements Listener {
                 break;
 
             case "givemoney":
-                if (!$sender->isOp()) {
+                if (!$sender->hasPermission("pocketeconomy.command.givemoney")) {
                     $sender->sendMessage("You do not have permission to use this command.");
                     return true;
                 }
@@ -204,7 +206,7 @@ class Main extends PluginBase implements Listener {
                 break;
 
             case "takemoney":
-                if (!$sender->isOp()) {
+                if (!$sender->hasPermission("pocketeconomy.command.takemoney")) {
                     $sender->sendMessage("You do not have permission to use this command.");
                     return true;
                 }
@@ -230,14 +232,19 @@ class Main extends PluginBase implements Listener {
                 $target = $args[0];
                 $balance = $this->getBalance($target);
                 $sender->sendMessage("$target's balance is $balance.");
-                break;
+            break;
 
-            case "bank":
+        case "bank":
+            if (count($args) < 1) {
+                $sender->sendMessage("Usage: /bank deposit <money> | /bank withdraw <money> | /bank mymoney");
+                return false;
+            }
+            $action = $args[0];
+            if ($action === "deposit" || $action === "withdraw") {
                 if (count($args) < 2) {
-                    $sender->sendMessage("Usage: /bank deposit <money> | /bank withdraw <money> | /bank mymoney");
+                    $sender->sendMessage("Usage: /bank $action <money>");
                     return false;
                 }
-                $action = $args[0];
                 $amount = intval($args[1]);
                 if ($amount < 0) {
                     $sender->sendMessage("Amount must be a non-negative number.");
@@ -265,78 +272,75 @@ class Main extends PluginBase implements Listener {
                         $this->addBalance($player, $amount);
                         $sender->sendMessage("Withdrew $amount from your bank account.");
                         break;
-
-                    case "mymoney":
-                        $bankBalance = $this->getBalance("bank-$player");
-                        $sender->sendMessage("Your bank balance is $bankBalance.");
-                        break;
-
-                    default:
-                        $sender->sendMessage("Usage: /bank deposit <money> | /bank withdraw <money> | /bank mymoney");
-                        break;
                 }
-                break;
+            } else if ($action === "mymoney") {
+                $bankBalance = $this->getBalance("bank-$player");
+                $sender->sendMessage("Your bank balance is $bankBalance.");
+            } else {
+                $sender->sendMessage("Usage: /bank deposit <money> | /bank withdraw <money> | /bank mymoney");
+            }
+            break;
 
-            case "mystatus":
-                $balance = $this->getBalance($player);
-                $debt = $this->getDebt($player);
-                $sender->sendMessage("Your balance: $balance\nYour debt: $debt");
-                break;
+        case "mystatus":
+            $balance = $this->getBalance($player);
+            $debt = $this->getDebt($player);
+            $sender->sendMessage("Your balance: $balance\nYour debt: $debt");
+            break;
 
-            case "bankadmin":
-                if (!$sender->isOp()) {
-                    $sender->sendMessage("You do not have permission to use this command.");
-                    return true;
-                }
-                if (count($args) < 3) {
+        case "bankadmin":
+            if (!$sender->hasPermission("pocketeconomy.command.bankadmin")) {
+                $sender->sendMessage("You do not have permission to use this command.");
+                return true;
+            }
+            if (count($args) < 3) {
+                $sender->sendMessage("Usage: /bankadmin takemoney <player> <money> | /bankadmin givemoney <player> <money>");
+                return false;
+            }
+            $action = $args[0];
+            $target = $args[1];
+            $amount = intval($args[2]);
+            if ($amount < 0) {
+                $sender->sendMessage("Amount must be a non-negative number.");
+                return false;
+            }
+            switch ($action) {
+                case "takemoney":
+                    $bankBalance = $this->getBalance("bank-$target");
+                    if ($amount > $bankBalance) {
+                        $sender->sendMessage("You can't take more than $target's bank balance.");
+                        return false;
+                    }
+                    $this->reduceBalance("bank-$target", $amount);
+                    $sender->sendMessage("Took $amount from $target's bank account.");
+                    break;
+
+                case "givemoney":
+                    $this->addBalance("bank-$target", $amount);
+                    $sender->sendMessage("Gave $amount to $target's bank account.");
+                    break;
+
+                default:
                     $sender->sendMessage("Usage: /bankadmin takemoney <player> <money> | /bankadmin givemoney <player> <money>");
-                    return false;
-                }
-                $action = $args[0];
-                $target = $args[1];
-                $amount = intval($args[2]);
-                if ($amount < 0) {
-                    $sender->sendMessage("Amount must be a non-negative number.");
-                    return false;
-                }
-                switch ($action) {
-                    case "takemoney":
-                        $bankBalance = $this->getBalance("bank-$target");
-                        if ($amount > $bankBalance) {
-                            $sender->sendMessage("You can't take more than $target's bank balance.");
-                            return false;
-                        }
-                        $this->reduceBalance("bank-$target", $amount);
-                        $sender->sendMessage("Took $amount from $target's bank account.");
-                        break;
+                    break;
+            }
+            break;
 
-                    case "givemoney":
-                        $this->addBalance("bank-$target", $amount);
-                        $sender->sendMessage("Gave $amount to $target's bank account.");
-                        break;
-
-                    default:
-                        $sender->sendMessage("Usage: /bankadmin takemoney <player> <money> | /bankadmin givemoney <player> <money>");
-                        break;
-                }
-                break;
-
-            case "economys":
-                $plugins = $this->getServer()->getPluginManager()->getPlugins();
-                $economyPlugins = [];
-                foreach ($plugins as $plugin) {
-                    if ($plugin instanceof PluginBase) {
-                        if (method_exists($plugin, "getEconomy")) {
-                            $economyPlugins[] = $plugin->getDescription()->getName();
-                        }
+        case "economys":
+            $plugins = $this->getServer()->getPluginManager()->getPlugins();
+            $economyPlugins = [];
+            foreach ($plugins as $plugin) {
+                if ($plugin instanceof PluginBase) {
+                    if (method_exists($plugin, "getEconomy")) {
+                        $economyPlugins[] = $plugin->getDescription()->getName();
                     }
                 }
-                $sender->sendMessage("Economy plugins: " . implode(", ", $economyPlugins));
-                break;
+            }
+            $sender->sendMessage("Economy plugins: " . implode(", ", $economyPlugins));
+            break;
 
-            default:
-                return false;
-        }
-        return true;
+        default:
+            return false;
     }
+    return true;
+}
 }
