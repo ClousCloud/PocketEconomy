@@ -2,6 +2,7 @@ name: PocketEconomy
 main: XPocketMC\PocketEconomy\Main
 version: 1.0.0
 api: 5.0.0
+src-namespace-prefix: XPocketMC\PocketEconomy
 author: XPocketMC
 commands:
   mymoney:
