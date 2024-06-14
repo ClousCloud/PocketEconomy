@@ -1,6 +1,6 @@
 <?php
 
-namespace XPocketMC\PocketEconomy;
+namespace PocketEconomy;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
