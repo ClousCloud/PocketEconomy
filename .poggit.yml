@@ -5,5 +5,5 @@ branches:
 - develop
 projects:
    PocketEconomy:
-   VoiceChat:
+   path: ""
 ...
